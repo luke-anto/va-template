@@ -186,19 +186,19 @@ export default function AppHomePage() {
       )}
 
       <Card className="mt-6 p-0 overflow-hidden">
-        <div className="px-5 py-4 border-b border-zinc-100 flex items-center justify-between gap-4">
-          <h2 className="text-base font-semibold">Assigned clients</h2>
+        <div className="px-5 py-4 border-b border-[#1e1e1e] flex items-center justify-between gap-4">
+          <h2 className="text-base font-semibold text-[#f0f0f0]">Assigned clients</h2>
           <input
             type="search"
             placeholder="Search clients…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="rounded-md border border-zinc-200 px-3 py-1.5 text-sm outline-none focus:border-zinc-400 w-48"
+            className="rounded-md border border-[#2a2a2a] bg-[#141414] text-[#f0f0f0] placeholder:text-[#505050] px-3 py-1.5 text-sm outline-none focus:border-[#0057ff] w-48 transition-colors"
           />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-left text-zinc-500 bg-zinc-50">
+            <thead className="text-left text-[#606060] bg-[#0d0d0d]">
               <tr>
                 <th className="px-5 py-3 font-medium">Name</th>
                 <th className="px-5 py-3 font-medium">Tier</th>
@@ -221,7 +221,7 @@ export default function AppHomePage() {
                 const tenant = Array.isArray(row.tenants) ? row.tenants[0] : row.tenants;
                 if (!tenant) return null;
                 return (
-                  <tr key={`${tenant.id}-${idx}`} className="border-t border-zinc-100 hover:bg-zinc-50">
+                  <tr key={`${tenant.id}-${idx}`} className="border-t border-[#1a1a1a] hover:bg-[#161616] transition-colors">
                     <td className="px-5 py-3">
                       <Link className="font-medium hover:underline text-zinc-900" href={`/app/tenants/${tenant.id}`}>
                         {tenant.name}

@@ -116,7 +116,7 @@ export default function TenantSettingsPage() {
           <label className="block">
             <div className="text-sm font-medium">Package tier</div>
             <select
-              className="mt-1 w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-400"
+              className="mt-1 w-full rounded-md border border-[#2a2a2a] bg-[#141414] text-[#f0f0f0] px-3 py-2 text-sm outline-none focus:border-[#0057ff] transition-colors"
               value={packageTier}
               onChange={(e) => setPackageTier(e.target.value)}
             >

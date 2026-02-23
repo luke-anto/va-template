@@ -90,6 +90,10 @@ DASHBOARD_ADMIN_TOKEN
 - [x] Tenant detail page (`/app/tenants/[tenantId]`) — KPI cards, service cycles + tasks, intake events, invoices, alerts, deliverables
 - [x] Tenant settings page (`/app/tenants/[tenantId]/settings`) + `PATCH /api/tenants/[tenantId]`
 - [x] Analytics/BI page (`/app/tenants/[tenantId]/analytics`) — recharts: revenue vs expenses, cash flow, BVA, expense breakdown, cycle completion, top expenses
+- [x] Cycle history page (`/app/tenants/[tenantId]/cycles`) — all cycles with tasks + deliverables, expandable, completion bar
+- [x] Transactions page (`/app/tenants/[tenantId]/transactions`) — full list with search, status filter, inline status update, CSV export
+- [x] Entities page (`/app/tenants/[tenantId]/entities`) — customers/vendors/partners with add form
+- [x] Report generation panel — on delivered cycles: task checklist + pre-filled client summary with copy button
 - [x] Intake webhook (`POST /api/intake/google-form`)
 - [x] Cycle start API (`POST /api/tenant/:id/cycle/start`)
 
@@ -104,6 +108,9 @@ src/app/
       page.tsx                          ← tenant detail hub
       settings/page.tsx                 ← tenant settings
       analytics/page.tsx                ← BI dashboard (recharts)
+      cycles/page.tsx                   ← cycle history (all months)
+      transactions/page.tsx             ← transactions list
+      entities/page.tsx                 ← customers/vendors/partners
   api/
     tenants/route.ts                    ← POST create tenant
     tenants/[tenantId]/route.ts         ← PATCH update tenant
@@ -113,7 +120,7 @@ src/app/
 
 ## What's Next (see TASK_QUEUE.md)
 
-Remaining backlog: CYCLE-04 (cycle history page), TX-01 (transactions list), ENTITY-01 (entities list), REPORT-02 (monthly report generation).
+All planned backlog items are complete. The full operator dashboard is built.
 
 ## Project System Files
 

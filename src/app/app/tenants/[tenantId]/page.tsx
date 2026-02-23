@@ -208,13 +208,13 @@ function DeliverablesSection({ cycleId, tenantId, deliverables, onAdded }: {
         <div className="mt-2 flex items-end gap-2">
           <div>
             <div className="text-xs text-zinc-500 mb-1">Type</div>
-            <select className="rounded border border-zinc-200 px-2 py-1 text-xs outline-none focus:border-zinc-400" value={type} onChange={(e) => setType(e.target.value)}>
+            <select className="rounded border border-[#2a2a2a] bg-[#141414] text-[#d0d0d0] px-2 py-1 text-xs outline-none focus:border-[#0057ff] transition-colors" value={type} onChange={(e) => setType(e.target.value)}>
               {DELIVERABLE_TYPES.map((t) => <option key={t}>{t}</option>)}
             </select>
           </div>
           <div className="flex-1">
             <div className="text-xs text-zinc-500 mb-1">URL (optional)</div>
-            <input className="w-full rounded border border-zinc-200 px-2 py-1 text-xs outline-none focus:border-zinc-400" placeholder="https://drive.google.com/..." value={url} onChange={(e) => setUrl(e.target.value)} />
+            <input className="w-full rounded border border-[#2a2a2a] bg-[#141414] text-[#d0d0d0] px-2 py-1 text-xs outline-none focus:border-[#0057ff] transition-colors" placeholder="https://drive.google.com/..." value={url} onChange={(e) => setUrl(e.target.value)} />
           </div>
           <button onClick={save} disabled={saving} className="rounded bg-zinc-900 px-3 py-1 text-xs text-white disabled:bg-zinc-400 hover:bg-zinc-700">{saving ? "Saving…" : "Save"}</button>
           <button onClick={() => setAdding(false)} className="text-xs text-zinc-500 hover:text-zinc-800">Cancel</button>
@@ -224,10 +224,106 @@ function DeliverablesSection({ cycleId, tenantId, deliverables, onAdded }: {
   );
 }
 
+// ─── Report Panel ─────────────────────────────────────────────────────────────
+
+function ReportPanel({ cycle, tenantName, onClose }: { cycle: ServiceCycle; tenantName: string; onClose: () => void }) {
+  const tasks       = cycle.tasks ?? [];
+  const doneTasks   = tasks.filter((t) => t.status === "done");
+  const openTasks   = tasks.filter((t) => t.status !== "done");
+  const deliverables = cycle.deliverables ?? [];
+  const monthLabel  = (() => { try { return format(new Date(cycle.month + "T12:00:00"), "MMMM yyyy"); } catch { return cycle.month; } })();
+
+  const summary = [
+    `Hi,`,
+    ``,
+    `Your ${monthLabel} bookkeeping is complete. Here's a quick summary:`,
+    ``,
+    `✅ Completed tasks (${doneTasks.length}/${tasks.length}):`,
+    ...doneTasks.map((t) => `  • ${t.task_type}`),
+    openTasks.length > 0 ? `\n⚠️ Open items (${openTasks.length}):` : "",
+    ...openTasks.map((t) => `  • ${t.task_type}`),
+    deliverables.length > 0 ? `\n📎 Deliverables (${deliverables.length}):` : "",
+    ...deliverables.map((d) => `  • ${d.type}${d.url ? `: ${d.url}` : ""}`),
+    ``,
+    `Please review and let me know if you have any questions.`,
+    ``,
+    `Thanks,`,
+  ].filter((l) => l !== "").join("\n");
+
+  const [copied, setCopied] = useState(false);
+
+  function copy() {
+    navigator.clipboard.writeText(summary).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    });
+  }
+
+  return (
+    <div className="mt-4 border-t border-zinc-100 pt-4">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-semibold text-zinc-700 uppercase tracking-wide">Monthly report — {monthLabel}</span>
+        <button onClick={onClose} className="text-xs text-zinc-400 hover:text-zinc-700">✕ Close</button>
+      </div>
+
+      {/* Checklist */}
+      <div className="mb-3">
+        <p className="text-xs font-medium text-zinc-500 mb-2">Task completion</p>
+        <ul className="space-y-1">
+          {tasks.map((t) => (
+            <li key={t.id} className="flex items-center gap-2 text-xs">
+              <span className={`w-3.5 h-3.5 rounded-full flex-shrink-0 ${t.status === "done" ? "bg-green-500" : "bg-zinc-200"}`} />
+              <span className={t.status === "done" ? "text-zinc-500 line-through" : "text-zinc-700"}>{t.task_type}</span>
+            </li>
+          ))}
+        </ul>
+        {tasks.length === 0 && <p className="text-xs text-zinc-400">No tasks recorded for this cycle.</p>}
+      </div>
+
+      {/* Deliverables list */}
+      {deliverables.length > 0 && (
+        <div className="mb-3">
+          <p className="text-xs font-medium text-zinc-500 mb-2">Deliverables attached</p>
+          <ul className="space-y-1">
+            {deliverables.map((d) => (
+              <li key={d.id} className="flex items-center gap-2 text-xs">
+                <span className="text-zinc-500">{d.type}</span>
+                {d.url && (
+                  <a href={d.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline truncate max-w-xs">{d.url}</a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* Summary text */}
+      <div className="mt-3">
+        <div className="flex items-center justify-between mb-1.5">
+          <p className="text-xs font-medium text-zinc-500">Client summary (copy &amp; send)</p>
+          <button
+            onClick={copy}
+            className={`text-xs px-2 py-1 rounded border transition-colors ${copied ? "bg-green-50 border-green-300 text-green-700" : "border-zinc-200 text-zinc-500 hover:border-zinc-400 hover:text-zinc-700"}`}
+          >
+            {copied ? "✓ Copied" : "Copy"}
+          </button>
+        </div>
+        <textarea
+          readOnly
+          value={summary}
+          rows={12}
+          className="w-full rounded-md border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs font-mono text-zinc-700 outline-none resize-none leading-relaxed"
+        />
+      </div>
+    </div>
+  );
+}
+
 // ─── Cycles Section ───────────────────────────────────────────────────────────
 
-function CyclesSection({ tenantId, cycles, onCycleStarted, onTaskToggled, onCycleAdvanced, onDeliverableAdded }: {
+function CyclesSection({ tenantId, cycles, tenantName, onCycleStarted, onTaskToggled, onCycleAdvanced, onDeliverableAdded }: {
   tenantId: string;
+  tenantName: string;
   cycles: ServiceCycle[];
   onCycleStarted: () => void;
   onTaskToggled: (cycleId: string, taskId: string, newStatus: string) => void;
@@ -241,6 +337,8 @@ function CyclesSection({ tenantId, cycles, onCycleStarted, onTaskToggled, onCycl
   const [advancing, setAdvancing] = useState<string | null>(null);
   // CYCLE-03: track pre-pause status for resume
   const [prePauseStatus, setPrePauseStatus] = useState<Record<string, string>>({});
+  // REPORT-02: track which cycle has report panel open
+  const [reportCycleId, setReportCycleId] = useState<string | null>(null);
 
   const thisMonth = format(startOfMonth(new Date()), "yyyy-MM-dd");
   const hasThisMonth = cycles.some((c) => c.month.startsWith(thisMonth.slice(0, 7)));
@@ -358,6 +456,16 @@ function CyclesSection({ tenantId, cycles, onCycleStarted, onTaskToggled, onCycl
                     </div>
                   )}
 
+                  {/* Generate report */}
+                  {cycle.status === "delivered" && (
+                    <button
+                      onClick={() => { setReportCycleId(reportCycleId === cycle.id ? null : cycle.id); setExpanded(cycle.id); }}
+                      className="text-xs text-indigo-600 hover:text-indigo-800 border border-indigo-200 rounded px-2 py-1 transition-colors hover:border-indigo-400"
+                    >
+                      {reportCycleId === cycle.id ? "Close report" : "Generate report"}
+                    </button>
+                  )}
+
                   <svg className={`w-4 h-4 text-zinc-400 transition-transform cursor-pointer ${isOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} onClick={() => setExpanded(isOpen ? null : cycle.id)}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
                   </svg>
@@ -390,6 +498,9 @@ function CyclesSection({ tenantId, cycles, onCycleStarted, onTaskToggled, onCycl
                     ))}
                   </ul>
                   <DeliverablesSection cycleId={cycle.id} tenantId={tenantId} deliverables={cycle.deliverables ?? []} onAdded={(d) => onDeliverableAdded(cycle.id, d)} />
+                  {reportCycleId === cycle.id && (
+                    <ReportPanel cycle={cycle} tenantName={tenantName} onClose={() => setReportCycleId(null)} />
+                  )}
                 </div>
               )}
             </Card>
@@ -426,7 +537,7 @@ function InvoicesSection({ invoices, onMarkPaid }: { invoices: Invoice[]; onMark
         )}
         {display.length > 0 && (
           <table className="w-full text-sm">
-            <thead className="text-left text-zinc-500 bg-zinc-50">
+            <thead className="text-left text-[#606060] bg-[#0d0d0d]">
               <tr>
                 <th className="px-5 py-3 font-medium">Invoice</th>
                 <th className="px-5 py-3 font-medium">Date</th>
@@ -442,7 +553,7 @@ function InvoicesSection({ invoices, onMarkPaid }: { invoices: Invoice[]; onMark
                 const isCancelled = inv.status === "cancelled";
                 const isOverdue = inv.due_date && new Date(inv.due_date) < new Date() && !isPaid && !isCancelled;
                 return (
-                  <tr key={inv.id} className="border-t border-zinc-100 hover:bg-zinc-50">
+                  <tr key={inv.id} className="border-t border-[#1a1a1a] hover:bg-[#161616] transition-colors">
                     <td className="px-5 py-3 font-mono text-xs text-zinc-700">{inv.invoice_id ?? "—"}</td>
                     <td className="px-5 py-3 text-zinc-600 whitespace-nowrap">{inv.date ? format(new Date(inv.date), "MMM d") : "—"}</td>
                     <td className={`px-5 py-3 whitespace-nowrap text-xs ${isOverdue ? "text-red-600 font-medium" : "text-zinc-600"}`}>
@@ -568,7 +679,7 @@ function IntakeSection({ tenantId, events, onStatusChange, onTransactionCreated 
         )}
         {filtered.length > 0 && (
           <table className="w-full text-sm">
-            <thead className="text-left text-zinc-500 bg-zinc-50">
+            <thead className="text-left text-[#606060] bg-[#0d0d0d]">
               <tr>
                 <th className="px-5 py-3 font-medium">Date</th>
                 <th className="px-5 py-3 font-medium">Description</th>
@@ -580,7 +691,7 @@ function IntakeSection({ tenantId, events, onStatusChange, onTransactionCreated 
             <tbody>
               {filtered.map((event) => (
                 <>
-                  <tr key={event.id} className="border-t border-zinc-100 hover:bg-zinc-50">
+                  <tr key={event.id} className="border-t border-[#1a1a1a] hover:bg-[#161616] transition-colors">
                     <td className="px-5 py-3 text-zinc-600 whitespace-nowrap">{event.date ? format(new Date(event.date), "MMM d") : "—"}</td>
                     <td className="px-5 py-3 text-zinc-700 max-w-xs truncate">{event.description ?? <span className="text-zinc-400">No description</span>}</td>
                     <td className="px-5 py-3 text-right font-mono text-zinc-900">{event.amount != null ? `$${Number(event.amount).toFixed(2)}` : "—"}</td>
@@ -600,19 +711,19 @@ function IntakeSection({ tenantId, events, onStatusChange, onTransactionCreated 
                         <div className="flex flex-wrap items-end gap-3">
                           <div>
                             <div className="text-xs text-zinc-500 mb-1">Date</div>
-                            <input type="date" className="rounded border border-zinc-200 px-2 py-1 text-xs outline-none focus:border-zinc-400" value={txDate} onChange={(e) => setTxDate(e.target.value)} />
+                            <input type="date" className="rounded border border-[#2a2a2a] bg-[#141414] text-[#d0d0d0] px-2 py-1 text-xs outline-none focus:border-[#0057ff] transition-colors" value={txDate} onChange={(e) => setTxDate(e.target.value)} />
                           </div>
                           <div>
                             <div className="text-xs text-zinc-500 mb-1">Amount</div>
-                            <input type="number" step="0.01" className="w-28 rounded border border-zinc-200 px-2 py-1 text-xs outline-none focus:border-zinc-400" value={txAmount} onChange={(e) => setTxAmount(e.target.value)} />
+                            <input type="number" step="0.01" className="w-28 rounded border border-[#2a2a2a] bg-[#141414] text-[#d0d0d0] px-2 py-1 text-xs outline-none focus:border-[#0057ff] transition-colors" value={txAmount} onChange={(e) => setTxAmount(e.target.value)} />
                           </div>
                           <div className="flex-1 min-w-32">
                             <div className="text-xs text-zinc-500 mb-1">Description</div>
-                            <input className="w-full rounded border border-zinc-200 px-2 py-1 text-xs outline-none focus:border-zinc-400" value={txDesc} onChange={(e) => setTxDesc(e.target.value)} />
+                            <input className="w-full rounded border border-[#2a2a2a] bg-[#141414] text-[#d0d0d0] px-2 py-1 text-xs outline-none focus:border-[#0057ff] transition-colors" value={txDesc} onChange={(e) => setTxDesc(e.target.value)} />
                           </div>
                           <div>
                             <div className="text-xs text-zinc-500 mb-1">Category ID <span className="text-red-500">*</span></div>
-                            <input className="w-24 rounded border border-zinc-200 px-2 py-1 text-xs outline-none focus:border-zinc-400" placeholder="e.g. 4100" value={txCategory} onChange={(e) => setTxCategory(e.target.value)} />
+                            <input className="w-24 rounded border border-[#2a2a2a] bg-[#141414] text-[#d0d0d0] px-2 py-1 text-xs outline-none focus:border-[#0057ff] transition-colors" placeholder="e.g. 4100" value={txCategory} onChange={(e) => setTxCategory(e.target.value)} />
                           </div>
                           <button onClick={() => submitTransaction(event.id)} disabled={txSaving} className="rounded bg-zinc-900 px-3 py-1.5 text-xs text-white hover:bg-zinc-700 disabled:bg-zinc-400">{txSaving ? "Saving…" : "Post transaction"}</button>
                         </div>
@@ -789,7 +900,16 @@ export default function TenantDetailPage() {
               {tenant.currency ? ` · ${tenant.currency}` : ""}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap justify-end">
+            <Link href={`/app/tenants/${tenantId}/cycles`} className="text-xs text-zinc-500 hover:text-zinc-800 border border-zinc-200 rounded px-3 py-1.5 transition-colors hover:border-zinc-400">
+              History
+            </Link>
+            <Link href={`/app/tenants/${tenantId}/transactions`} className="text-xs text-zinc-500 hover:text-zinc-800 border border-zinc-200 rounded px-3 py-1.5 transition-colors hover:border-zinc-400">
+              Transactions
+            </Link>
+            <Link href={`/app/tenants/${tenantId}/entities`} className="text-xs text-zinc-500 hover:text-zinc-800 border border-zinc-200 rounded px-3 py-1.5 transition-colors hover:border-zinc-400">
+              Entities
+            </Link>
             <Link href={`/app/tenants/${tenantId}/analytics`} className="text-xs text-zinc-500 hover:text-zinc-800 border border-zinc-200 rounded px-3 py-1.5 transition-colors hover:border-zinc-400">
               Analytics
             </Link>
@@ -811,6 +931,7 @@ export default function TenantDetailPage() {
 
       <CyclesSection
         tenantId={tenantId}
+        tenantName={tenant?.name ?? ""}
         cycles={cycles}
         onCycleStarted={load}
         onTaskToggled={handleTaskToggle}

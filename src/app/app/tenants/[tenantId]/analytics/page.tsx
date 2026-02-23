@@ -118,8 +118,8 @@ function StatCard({ label, value, sub, highlight }: { label: string; value: stri
 
 function EmptyChart({ message }: { message: string }) {
   return (
-    <div className="flex items-center justify-center h-48 rounded-lg bg-zinc-50 border border-dashed border-zinc-200">
-      <p className="text-sm text-zinc-400">{message}</p>
+    <div className="flex items-center justify-center h-48 rounded-lg bg-[#0d0d0d] border border-dashed border-[#2a2a2a]">
+      <p className="text-sm text-[#505050]">{message}</p>
     </div>
   );
 }
@@ -355,11 +355,11 @@ export default function TenantAnalyticsPage() {
           {hasRevData ? (
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={monthlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tickFormatter={fmt} tick={{ fontSize: 11 }} width={48} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#606060" }} />
+                <YAxis tickFormatter={fmt} tick={{ fontSize: 11, fill: "#606060" }} width={48} />
                 <Tooltip content={<DollarTooltip />} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
+                <Legend wrapperStyle={{ fontSize: 12, color: "#888888" }} />
                 <Bar dataKey="revenue"  name="Revenue"  fill="#10b981" radius={[3, 3, 0, 0]} />
                 <Bar dataKey="expenses" name="Expenses" fill="#ef4444" radius={[3, 3, 0, 0]} />
               </BarChart>
@@ -376,9 +376,9 @@ export default function TenantAnalyticsPage() {
           {hasRevData ? (
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={monthlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tickFormatter={fmt} tick={{ fontSize: 11 }} width={48} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#606060" }} />
+                <YAxis tickFormatter={fmt} tick={{ fontSize: 11, fill: "#606060" }} width={48} />
                 <Tooltip content={<DollarTooltip />} />
                 <Line type="monotone" dataKey="net" name="Net" stroke="#3b82f6" strokeWidth={2} dot={{ r: 3 }} activeDot={{ r: 5 }} />
               </LineChart>
@@ -395,14 +395,14 @@ export default function TenantAnalyticsPage() {
           {hasBudget ? (
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={monthlyData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
-                <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tickFormatter={fmt} tick={{ fontSize: 11 }} width={48} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#606060" }} />
+                <YAxis tickFormatter={fmt} tick={{ fontSize: 11, fill: "#606060" }} width={48} />
                 <Tooltip content={<DollarTooltip />} />
-                <Legend wrapperStyle={{ fontSize: 12 }} />
-                <Bar dataKey="budgetRev"  name="Budget (Rev)"  fill="#c7d2fe" radius={[3, 3, 0, 0]} />
+                <Legend wrapperStyle={{ fontSize: 12, color: "#888888" }} />
+                <Bar dataKey="budgetRev"  name="Budget (Rev)"  fill="#1d4ed8" radius={[3, 3, 0, 0]} opacity={0.5} />
                 <Bar dataKey="revenue"    name="Actual (Rev)"  fill="#10b981" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="budgetExp"  name="Budget (Exp)"  fill="#fca5a5" radius={[3, 3, 0, 0]} />
+                <Bar dataKey="budgetExp"  name="Budget (Exp)"  fill="#b91c1c" radius={[3, 3, 0, 0]} opacity={0.5} />
                 <Bar dataKey="expenses"   name="Actual (Exp)"  fill="#ef4444" radius={[3, 3, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
@@ -437,9 +437,9 @@ export default function TenantAnalyticsPage() {
             {hasCycles ? (
               <ResponsiveContainer width="100%" height={220}>
                 <BarChart data={cycleData} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f4f4f5" />
-                  <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                  <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 11 }} width={36} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#252525" />
+                  <XAxis dataKey="month" tick={{ fontSize: 11, fill: "#606060" }} />
+                  <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} tick={{ fontSize: 11, fill: "#606060" }} width={36} />
                   <Tooltip formatter={(v: number | string | undefined) => `${v ?? 0}%`} />
                   <Bar dataKey="done_tasks" name="Completion %" fill="#6366f1" radius={[3, 3, 0, 0]}>
                     {cycleData.map((c, i) => (
@@ -460,7 +460,7 @@ export default function TenantAnalyticsPage() {
         <Section title="Top expenses" sub="Largest expense categories — last 6 months">
           <Card className="p-0 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="text-left text-zinc-500 bg-zinc-50">
+              <thead className="text-left text-[#606060] bg-[#0d0d0d]">
                 <tr>
                   <th className="px-5 py-3 font-medium">Category</th>
                   <th className="px-5 py-3 font-medium text-right">Total</th>
@@ -472,18 +472,18 @@ export default function TenantAnalyticsPage() {
                   const total = categoryData.reduce((s, r) => s + r.amount, 0);
                   const share = total > 0 ? (row.amount / total) * 100 : 0;
                   return (
-                    <tr key={i} className="border-t border-zinc-100 hover:bg-zinc-50">
-                      <td className="px-5 py-3 text-zinc-700 flex items-center gap-2">
+                    <tr key={i} className="border-t border-[#1e1e1e] hover:bg-[#161616]">
+                      <td className="px-5 py-3 text-[#c0c0c0] flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                         {row.name}
                       </td>
-                      <td className="px-5 py-3 text-right font-mono text-zinc-900">{fmt(row.amount)}</td>
+                      <td className="px-5 py-3 text-right font-mono text-[#f0f0f0]">{fmt(row.amount)}</td>
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-zinc-100 rounded-full overflow-hidden">
+                          <div className="flex-1 h-1.5 bg-[#1e1e1e] rounded-full overflow-hidden">
                             <div className="h-1.5 rounded-full" style={{ width: `${share.toFixed(0)}%`, backgroundColor: COLORS[i % COLORS.length] }} />
                           </div>
-                          <span className="text-xs text-zinc-500 w-8">{share.toFixed(0)}%</span>
+                          <span className="text-xs text-[#606060] w-8">{share.toFixed(0)}%</span>
                         </div>
                       </td>
                     </tr>

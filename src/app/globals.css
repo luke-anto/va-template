@@ -2,8 +2,165 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body {
+html, body {
   height: 100%;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   HOLO DARK THEME
+   Rules outside @layer have higher cascade priority than all @layer rules,
+   including Tailwind's @layer utilities. This lets us theme the whole app
+   from one place without touching every page.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: #2a2a2a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+
+/* ── Selection ─────────────────────────────────────────────────────────────── */
+::selection { background: rgba(0,87,255,0.3); color: #fff; }
+
+/* ── Autofill dark fix ─────────────────────────────────────────────────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #141414 inset !important;
+  -webkit-text-fill-color: #f0f0f0 !important;
+  caret-color: #f0f0f0;
+}
+
+/* ── Base backgrounds ──────────────────────────────────────────────────────── */
+.bg-white        { background-color: #111111; }
+.bg-zinc-50      { background-color: #0d0d0d; }
+.bg-zinc-100     { background-color: #1a1a1a; }
+.bg-zinc-200     { background-color: #222222; }
+.bg-zinc-400     { background-color: #3a3a3a; }
+.bg-zinc-900     { background-color: #0057ff; }
+
+/* Opacity modifier variants */
+.bg-zinc-50\/30  { background-color: rgba(255,255,255,0.02); }
+.bg-zinc-50\/50  { background-color: rgba(255,255,255,0.03); }
+
+/* ── Hover backgrounds ─────────────────────────────────────────────────────── */
+.hover\:bg-zinc-50:hover        { background-color: #161616; }
+.hover\:bg-zinc-50\/50:hover    { background-color: rgba(255,255,255,0.04); }
+.hover\:bg-zinc-100:hover       { background-color: #1e1e1e; }
+.hover\:bg-zinc-700:hover       { background-color: #1a6aff; }
+.hover\:bg-zinc-800:hover       { background-color: #1a6aff; }
+.disabled\:bg-zinc-400:disabled { background-color: #1a1a1a; }
+
+/* ── Text colors ───────────────────────────────────────────────────────────── */
+.text-zinc-950 { color: #f5f5f5; }
+.text-zinc-900 { color: #f0f0f0; }
+.text-zinc-800 { color: #d8d8d8; }
+.text-zinc-700 { color: #c0c0c0; }
+.text-zinc-600 { color: #a0a0a0; }
+.text-zinc-500 { color: #707070; }
+.text-zinc-400 { color: #555555; }
+.text-zinc-300 { color: #3a3a3a; }
+
+/* Hover text */
+.hover\:text-zinc-700:hover { color: #d0d0d0; }
+.hover\:text-zinc-800:hover { color: #e8e8e8; }
+.hover\:text-zinc-900:hover { color: #ffffff; }
+.disabled\:text-zinc-400:disabled { color: #454545; }
+
+/* ── Borders ───────────────────────────────────────────────────────────────── */
+.border-zinc-100 { border-color: #1a1a1a; }
+.border-zinc-200 { border-color: #252525; }
+.border-zinc-300 { border-color: #333333; }
+.hover\:border-zinc-400:hover { border-color: #484848; }
+.focus\:border-zinc-400:focus { border-color: #0057ff; }
+
+/* Ring */
+.ring-zinc-200 { --tw-ring-color: #252525; }
+.focus-visible\:ring-zinc-900:focus-visible { --tw-ring-color: #0057ff; }
+
+/* ── Status badge: yellow (collecting, warning) ────────────────────────────── */
+.bg-yellow-100  { background-color: rgba(234,179,8,0.12); }
+.bg-amber-100   { background-color: rgba(245,158,11,0.12); }
+.text-yellow-800 { color: #fbbf24; }
+.text-yellow-700 { color: #f59e0b; }
+.text-amber-700  { color: #fbbf24; }
+
+/* ── Status badge: blue (processing, sent) ─────────────────────────────────── */
+.bg-blue-100    { background-color: rgba(59,130,246,0.12); }
+.text-blue-800  { color: #60a5fa; }
+.text-blue-700  { color: #60a5fa; }
+
+/* ── Status badge: green (delivered, paid) ─────────────────────────────────── */
+.bg-green-100   { background-color: rgba(34,197,94,0.12); }
+.bg-green-50    { background-color: rgba(34,197,94,0.07); }
+.text-green-800 { color: #4ade80; }
+.text-green-700 { color: #4ade80; }
+.text-green-600 { color: #4ade80; }
+
+/* ── Status badge: red (cancelled, error) ──────────────────────────────────── */
+.bg-red-100     { background-color: rgba(239,68,68,0.12); }
+.bg-red-50      { background-color: rgba(239,68,68,0.07); }
+.text-red-800   { color: #f87171; }
+.text-red-700   { color: #f87171; }
+.text-red-600   { color: #f87171; }
+
+/* ── Status badge: purple (reconciling) ────────────────────────────────────── */
+.bg-purple-100  { background-color: rgba(168,85,247,0.12); }
+.bg-violet-100  { background-color: rgba(139,92,246,0.12); }
+.text-purple-800 { color: #c084fc; }
+.text-purple-700 { color: #c084fc; }
+.text-violet-700 { color: #a78bfa; }
+
+/* ── Status badge: orange (reporting) ──────────────────────────────────────── */
+.bg-orange-100  { background-color: rgba(249,115,22,0.12); }
+.text-orange-800 { color: #fb923c; }
+.text-orange-700 { color: #fb923c; }
+
+/* ── Status badge: sky/indigo ───────────────────────────────────────────────── */
+.bg-sky-100     { background-color: rgba(14,165,233,0.12); }
+.text-sky-700   { color: #38bdf8; }
+.bg-indigo-100  { background-color: rgba(99,102,241,0.12); }
+.text-indigo-700 { color: #818cf8; }
+
+/* ── Alert banner (amber) ──────────────────────────────────────────────────── */
+.bg-amber-50       { background-color: rgba(245,158,11,0.07); }
+.border-amber-200  { border-color: rgba(245,158,11,0.2); }
+.text-amber-800    { color: #fcd34d; }
+.text-amber-600    { color: #f59e0b; }
+
+/* ── Interactive blue links & accents ──────────────────────────────────────── */
+.text-blue-600  { color: #60a5fa; }
+.hover\:text-blue-800:hover { color: #93c5fd; }
+.border-blue-200 { border-color: rgba(59,130,246,0.2); }
+.hover\:border-blue-400:hover { border-color: rgba(59,130,246,0.5); }
+
+/* Indigo (report panel button) */
+.text-indigo-600 { color: #818cf8; }
+.hover\:text-indigo-800:hover { color: #a5b4fc; }
+.border-indigo-200 { border-color: rgba(99,102,241,0.2); }
+.hover\:border-indigo-400:hover { border-color: rgba(99,102,241,0.5); }
+
+/* ── Shadows ───────────────────────────────────────────────────────────────── */
+.shadow-sm  { box-shadow: none; }
+.shadow-lg  { box-shadow: 0 8px 32px rgba(0,0,0,0.6); }
+
+/* ── Focus ring ────────────────────────────────────────────────────────────── */
+.focus-visible\:ring-offset-2:focus-visible { --tw-ring-offset-color: #0a0a0a; }
+
+/* ── Native form elements (dark base) ─────────────────────────────────────── */
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
+  background-color: #141414;
+  color: #f0f0f0;
+}
+
+select option {
+  background-color: #141414;
+  color: #f0f0f0;
+}
+
+/* ── Table ─────────────────────────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+}
