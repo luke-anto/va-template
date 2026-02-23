@@ -16,7 +16,7 @@
     "framer-motion": "^11.11.9",
     "image-size": "^1.1.1",
     "ioredis": "^5.4.2",
-    "next": "15.1.6",
+    "next": "^16.1.6",
     "nodemailer": "^6.10.0",
     "pg": "^8.13.1",
     "react": "19.0.0",
